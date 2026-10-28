@@ -1,0 +1,1911 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wild — Travel Hero</title>
+    <meta name="description" content="Single-screen interactive travel rental hero for Wild featuring a choreographed pill reveal and floating island scene." />
+    <meta property="og:title" content="Wild — Travel Hero" />
+    <meta property="og:description" content="Single-screen interactive travel rental hero for Wild featuring a choreographed pill reveal and floating island scene." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/InterVariable.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Inter';
+        src: url('/InterVariable.woff2') format('woff2');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: block;
+      }
+
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --fs: min(19.6vh, 13.2vw);
+        --page-start: #ffffff;
+        --paper: #f2f2f1;
+        --ink: #1d1d1d;
+        --secondary: #3a3a3a;
+        --rule: #a9a9a6;
+        --btn-bg: #1b1b1b;
+        --pill-bg: #d8d3cf;
+        --hairline: #b9b9b9;
+      }
+
+      html, body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        background-color: var(--page-start);
+        color: var(--ink);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        user-select: none;
+      }
+
+      .stage {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        font-size: var(--fs);
+        background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 48%, #18181b 100%);
+      }
+
+      /* Second Page: Best Work Reels Showcase */
+      .reels-page {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        background-color: var(--paper);
+        padding: clamp(64px, 8vh, 110px) clamp(20px, 4vw, 64px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(36px, 5vh, 64px);
+        border-top: 1px solid rgba(29, 29, 29, 0.08);
+      }
+
+      .best-work-heading {
+        font-size: clamp(2.5rem, 6vw, 5.25rem);
+        font-weight: 800;
+        letter-spacing: -0.045em;
+        line-height: 0.95;
+        text-align: center;
+        text-transform: uppercase;
+        background: linear-gradient(135deg, #1d1d1d 0%, #52525b 45%, #a1a1aa 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .reels-grid {
+        width: 100%;
+        max-width: 1360px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: clamp(16px, 2.2vw, 32px);
+        align-items: center;
+      }
+
+      .reel-box {
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        border-radius: 22px;
+        background-color: #e6e4e0;
+        border: 1px solid rgba(29, 29, 29, 0.12);
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .reel-box:hover {
+        transform: translateY(-4px);
+        border-color: rgba(29, 29, 29, 0.28);
+        box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.12);
+      }
+
+      .reel-box video,
+      .reel-box iframe,
+      .reel-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border: none;
+      }
+
+      .reel-mute-btn {
+        position: absolute;
+        bottom: 14px;
+        right: 14px;
+        z-index: 5;
+        width: 38px;
+        height: 38px;
+        border-radius: 9999px;
+        background-color: rgba(20, 20, 20, 0.65);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+        transition: background-color 0.16s ease, transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .reel-mute-btn:hover {
+        background-color: rgba(20, 20, 20, 0.85);
+        transform: scale(1.06);
+      }
+
+      .reel-mute-btn:active {
+        transform: scale(0.95);
+      }
+
+      .reel-mute-btn svg {
+        width: 18px;
+        height: 18px;
+        display: block;
+      }
+
+      .reel-mute-btn .icon-unmuted {
+        display: none;
+      }
+
+      .reel-mute-btn.is-unmuted .icon-muted {
+        display: none;
+      }
+
+      .reel-mute-btn.is-unmuted .icon-unmuted {
+        display: block;
+      }
+
+      @media (max-width: 1024px) {
+        .reels-grid {
+          grid-template-columns: repeat(2, 1fr);
+          max-width: 680px;
+        }
+      }
+
+      /* Background black & white gradient with flowing white S-curves */
+      .bg-layer {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 48%, #141414 100%);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 0;
+        will-change: opacity;
+      }
+
+      .bg-layer svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* Top Navigation */
+      .site-nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.14em 0.27em;
+        transform: translateY(-140%);
+        will-change: transform;
+      }
+
+      .nav-group {
+        display: flex;
+        align-items: center;
+        gap: 2.35em;
+        font-size: max(12px, 0.072em);
+        font-weight: 450;
+        letter-spacing: -0.01em;
+        line-height: 1;
+      }
+
+      .nav-link {
+        color: var(--ink);
+        text-decoration: none;
+        cursor: pointer;
+        position: relative;
+        white-space: nowrap;
+        transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .nav-link:hover {
+        opacity: 0.6;
+      }
+
+      .nav-link:focus-visible {
+        outline: 1.5px solid var(--ink);
+        outline-offset: 4px;
+        border-radius: 2px;
+      }
+
+      /* Hero Row: WI · pill · LD */
+      .hero {
+        position: absolute;
+        top: 43%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 5;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 0.026em;
+        white-space: nowrap;
+        will-change: gap;
+      }
+
+      .word-part {
+        font-size: 1em;
+        font-weight: 800;
+        letter-spacing: -0.045em;
+        line-height: 0.8;
+        color: var(--ink);
+        display: inline-block;
+        flex-shrink: 0;
+        transform: translateZ(0);
+      }
+
+      /* Center Stadium Pill */
+      .pill {
+        position: relative;
+        width: 0.012em;
+        height: 1.81em;
+        border-radius: 9999px;
+        overflow: hidden;
+        background-color: var(--pill-bg);
+        flex-shrink: 0;
+        clip-path: inset(50% 0);
+        will-change: width, height, clip-path;
+        transform: translateZ(0);
+      }
+
+      .pill-video {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 100%;
+        width: max(100%, 4.2em);
+        min-width: 4.2em;
+        object-fit: cover;
+        object-position: center top;
+        opacity: 1;
+        display: block;
+        pointer-events: none;
+      }
+
+      .pill-hairline {
+        position: absolute;
+        inset: 0;
+        background-color: var(--hairline);
+        opacity: 1;
+        pointer-events: none;
+        z-index: 3;
+        will-change: opacity;
+      }
+
+      .pill-icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0.145em;
+        height: 0.145em;
+        min-width: 19px;
+        min-height: 19px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        opacity: 0;
+        z-index: 4;
+        background: transparent;
+        border: none;
+        padding: 0;
+        will-change: opacity;
+      }
+
+      .pill-icon svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.22));
+      }
+
+      .pill-icon--left {
+        left: 0.16em;
+        pointer-events: none;
+      }
+
+      .pill-icon--right {
+        right: 0.16em;
+        cursor: pointer;
+        transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .pill-icon--right:hover {
+        transform: translateY(-50%) scale(1.08);
+      }
+
+      .pill-icon--right:active {
+        transform: translateY(-50%) scale(0.95);
+      }
+
+      .pill-icon--right:focus-visible {
+        outline: 1.5px solid #ffffff;
+        outline-offset: 3px;
+        border-radius: 50%;
+      }
+
+      .speaker-waves {
+        transition: opacity 0.16s ease;
+      }
+
+      .pill-icon--right.is-muted .speaker-waves {
+        opacity: 0;
+      }
+
+      /* Bottom Footer Bar */
+      .site-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 0.22em;
+        padding: 0 0.27em 0.17em;
+        transform: translateY(160%);
+        will-change: transform;
+      }
+
+      .footer-copy {
+        width: 1.42em;
+        font-size: 0.066em;
+        line-height: 1.45;
+        font-weight: 420;
+        color: var(--secondary);
+        letter-spacing: -0.008em;
+        flex-shrink: 0;
+      }
+
+      .drop-cap {
+        float: left;
+        font-size: 2.35em;
+        font-weight: 650;
+        line-height: 0.82;
+        color: var(--ink);
+        margin-right: 0.09em;
+        margin-top: 0.03em;
+      }
+
+      .footer-action-row {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        gap: 0.22em;
+        margin-bottom: 0.025em;
+      }
+
+      .footer-rule {
+        flex: 1;
+        height: 1px;
+        background-color: var(--rule);
+        transform: scaleX(0);
+        transform-origin: center center;
+        will-change: transform;
+      }
+
+      .wild-btn {
+        background-color: var(--btn-bg);
+        color: #ffffff;
+        border: none;
+        border-radius: 9999px;
+        font-family: inherit;
+        font-size: max(12px, 0.068em);
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        padding: 0.92em 1.68em;
+        line-height: 1;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.16s ease;
+      }
+
+      .wild-btn:hover {
+        background-color: #2e2e2e;
+        transform: translateY(-1px);
+      }
+
+      .wild-btn:active {
+        transform: translateY(0) scale(0.98);
+      }
+
+      .wild-btn:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 3px;
+      }
+
+      /* Phone Responsive Layout (<= 720px) */
+      @media (max-width: 720px) {
+        :root {
+          --fs: min(34vw, 16.5vh);
+        }
+
+        .site-nav {
+          padding: 18px 20px;
+          justify-content: space-between;
+        }
+
+        .nav-group--left {
+          width: 100%;
+          justify-content: space-between;
+          gap: 12px;
+          font-size: 12.5px;
+        }
+
+        .nav-group--right {
+          display: none;
+        }
+
+        .hero {
+          top: 47%;
+          flex-direction: column;
+          gap: 0.03em;
+          width: calc(100vw - 40px);
+        }
+
+        .pill {
+          width: calc(100vw - 40px);
+          height: 1.5px;
+          clip-path: inset(0 50%);
+        }
+
+        .pill-video {
+          top: 50%;
+          left: 0;
+          width: 100%;
+          min-width: 100%;
+          height: calc((100vw - 40px) / 1.85);
+          transform: translateY(-50%);
+          object-fit: cover;
+          object-position: center top;
+        }
+
+        .pill-icon {
+          width: 20px;
+          height: 20px;
+        }
+
+        .pill-icon--left {
+          left: 18px;
+        }
+
+        .pill-icon--right {
+          right: 18px;
+        }
+
+        .site-footer {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 14px;
+          padding: 0 20px 20px;
+        }
+
+        .footer-copy {
+          width: 100%;
+          font-size: 13px;
+          line-height: 1.5;
+        }
+
+        .footer-action-row {
+          width: 100%;
+          gap: 16px;
+          margin-bottom: 0;
+        }
+
+        .wild-btn {
+          height: 38px;
+          padding: 0 20px;
+          font-size: 12.5px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .reels-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 14px;
+        }
+
+        .reel-box {
+          border-radius: 16px;
+        }
+
+        .contact-subpage-card {
+          padding: 28px 20px;
+          border-radius: 22px;
+        }
+
+        .contact-form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Contact / Enquiry Subpage Overlay */
+      .contact-subpage {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background-color: rgba(242, 242, 241, 0.94);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s ease;
+        overflow-y: auto;
+      }
+
+      .contact-subpage.is-open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .contact-subpage-card {
+        width: 100%;
+        max-width: 580px;
+        background-color: #ffffff;
+        border: 1px solid rgba(29, 29, 29, 0.1);
+        border-radius: 28px;
+        padding: 40px 44px;
+        box-shadow: 0 28px 70px -20px rgba(0, 0, 0, 0.12);
+        transform: translateY(18px) scale(0.98);
+        transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+      }
+
+      .contact-subpage.is-open .contact-subpage-card {
+        transform: translateY(0) scale(1);
+      }
+
+      .contact-subpage-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .contact-subpage-title {
+        font-size: clamp(1.65rem, 3vw, 2.25rem);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        line-height: 1.05;
+        color: var(--ink);
+      }
+
+      .contact-subpage-subtitle {
+        font-size: 14px;
+        color: var(--secondary);
+        margin-top: 6px;
+        line-height: 1.45;
+      }
+
+      .contact-close-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 9999px;
+        border: 1px solid rgba(29, 29, 29, 0.12);
+        background: #f7f7f6;
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background-color 0.16s ease, transform 0.16s ease;
+      }
+
+      .contact-close-btn:hover {
+        background: #ebebea;
+        transform: scale(1.05);
+      }
+
+      .contact-form {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .contact-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .form-label {
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        width: 100%;
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--ink);
+        background-color: #f8f8f7;
+        border: 1px solid rgba(29, 29, 29, 0.14);
+        border-radius: 14px;
+        padding: 12px 15px;
+        outline: none;
+        transition: border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease;
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        background-color: #ffffff;
+        border-color: var(--ink);
+        box-shadow: 0 0 0 3px rgba(29, 29, 29, 0.08);
+      }
+
+      .form-textarea {
+        min-height: 96px;
+        resize: vertical;
+      }
+
+      .enquiry-submit-btn {
+        margin-top: 6px;
+        width: 100%;
+        background-color: var(--btn-bg);
+        color: #ffffff;
+        border: none;
+        border-radius: 9999px;
+        font-family: inherit;
+        font-size: 14.5px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        padding: 15px 24px;
+        cursor: pointer;
+        transition: background-color 0.16s ease, transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .enquiry-submit-btn:hover {
+        background-color: #2e2e2e;
+        transform: translateY(-1px);
+      }
+
+      .enquiry-submit-btn:active {
+        transform: translateY(0) scale(0.99);
+      }
+
+      .enquiry-success {
+        display: none;
+        padding: 16px 18px;
+        border-radius: 16px;
+        background-color: #f2f2f1;
+        border: 1px solid rgba(29, 29, 29, 0.12);
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: var(--ink);
+      }
+
+      .enquiry-success.is-visible {
+        display: block;
+      }
+
+      /* Third Page: Website Ending / Outro Section */
+      .ending-page {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        background-color: #141414;
+        color: #f5f5f4;
+        padding: clamp(64px, 9vh, 120px) clamp(20px, 5vw, 72px) clamp(36px, 5vh, 56px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+
+      .ending-kicker {
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #a1a1aa;
+        text-align: center;
+      }
+
+      .ending-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        max-width: 780px;
+        width: 100%;
+        gap: 24px;
+        margin: auto 0;
+        padding: 32px 0;
+      }
+
+      .ending-avatar-ring {
+        width: clamp(190px, 22vw, 250px);
+        height: clamp(190px, 22vw, 250px);
+        border-radius: 50%;
+        padding: 6px;
+        background: linear-gradient(135deg, #ffffff 0%, #71717a 50%, #27272a 100%);
+        box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.65);
+        flex-shrink: 0;
+      }
+
+      .ending-avatar-frame {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: #27272a;
+        position: relative;
+      }
+
+      .ending-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* Anchor to the subject's face and upper body in the portrait */
+        object-position: 52% 48%;
+        transform: scale(1.65);
+        transform-origin: 52% 46%;
+        display: block;
+      }
+
+      .ending-name {
+        font-size: clamp(2.25rem, 5.2vw, 4.5rem);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        line-height: 0.98;
+        background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 60%, #71717a 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .ending-role {
+        font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+        font-weight: 450;
+        color: #a1a1aa;
+        max-width: 520px;
+        line-height: 1.5;
+        margin-top: -6px;
+      }
+
+      .ending-contact-grid {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 14px 28px;
+        margin-top: 8px;
+        padding: 18px 28px;
+        border-radius: 20px;
+        background-color: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .ending-contact-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14.5px;
+        color: #e4e4e7;
+        text-decoration: none;
+        transition: color 0.16s ease, transform 0.16s ease;
+      }
+
+      a.ending-contact-item:hover {
+        color: #ffffff;
+        transform: translateY(-1px);
+      }
+
+      .ending-contact-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #71717a;
+      }
+
+      .ending-contact-divider {
+        width: 1px;
+        height: 18px;
+        background-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .ending-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin-top: 6px;
+      }
+
+      .ending-cta-btn {
+        background-color: #ffffff;
+        color: #141414;
+        border: none;
+        border-radius: 9999px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        padding: 13px 26px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.16s ease;
+      }
+
+      .ending-cta-btn:hover {
+        background-color: #e4e4e7;
+        transform: translateY(-2px);
+      }
+
+      .ending-cta-btn--ghost {
+        background-color: transparent;
+        color: #f5f5f4;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      .ending-cta-btn--ghost:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+      }
+
+      .ending-bottom-bar {
+        width: 100%;
+        max-width: 1360px;
+        padding-top: 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 13px;
+        color: #71717a;
+      }
+
+      .ending-top-link {
+        color: #d4d4d8;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.16s ease;
+      }
+
+      .ending-top-link:hover {
+        color: #ffffff;
+      }
+
+      @media (max-width: 720px) {
+        .ending-contact-grid {
+          flex-direction: column;
+          align-items: flex-start;
+          width: 100%;
+          padding: 16px 20px;
+        }
+
+        .ending-contact-divider {
+          display: none;
+        }
+
+        .ending-bottom-bar {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="stage" id="stage">
+      <!-- Soft paper background with 15 flowing white S-curve lines -->
+      <div class="bg-layer" id="bgLayer" aria-hidden="true">
+        <svg viewBox="0 0 1440 960" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M-120 980 C 310 920, 620 420, 1540 160" stroke="#ffffff" stroke-width="1.4" stroke-opacity="0.62" stroke-linecap="round" />
+          <path d="M-90 940 C 340 870, 650 380, 1560 110" stroke="#ffffff" stroke-width="2.3" stroke-opacity="0.75" stroke-linecap="round" />
+          <path d="M-140 890 C 280 820, 610 340, 1520 65" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.55" stroke-linecap="round" />
+          <path d="M-60 850 C 380 780, 700 290, 1580 20" stroke="#ffffff" stroke-width="3.4" stroke-opacity="0.82" stroke-linecap="round" />
+          <path d="M-110 800 C 320 730, 660 240, 1510 -30" stroke="#ffffff" stroke-width="1.8" stroke-opacity="0.68" stroke-linecap="round" />
+          <path d="M-150 740 C 260 680, 610 190, 1480 -70" stroke="#ffffff" stroke-width="2.8" stroke-opacity="0.78" stroke-linecap="round" />
+          <path d="M-80 680 C 360 620, 710 140, 1540 -120" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.60" stroke-linecap="round" />
+          <path d="M-40 1030 C 420 950, 760 470, 1610 210" stroke="#ffffff" stroke-width="3.9" stroke-opacity="0.85" stroke-linecap="round" />
+          <path d="M40 1060 C 480 970, 820 520, 1630 270" stroke="#ffffff" stroke-width="1.6" stroke-opacity="0.64" stroke-linecap="round" />
+          <path d="M120 1090 C 550 990, 880 570, 1660 330" stroke="#ffffff" stroke-width="2.6" stroke-opacity="0.74" stroke-linecap="round" />
+          <path d="M210 1120 C 620 1010, 950 620, 1690 390" stroke="#ffffff" stroke-width="1.3" stroke-opacity="0.58" stroke-linecap="round" />
+          <path d="M-180 610 C 220 550, 560 90, 1420 -160" stroke="#ffffff" stroke-width="2.1" stroke-opacity="0.70" stroke-linecap="round" />
+          <path d="M-210 530 C 180 480, 510 30, 1360 -210" stroke="#ffffff" stroke-width="3.2" stroke-opacity="0.80" stroke-linecap="round" />
+          <path d="M-240 450 C 140 400, 460 -20, 1300 -250" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.57" stroke-linecap="round" />
+          <path d="M310 1150 C 710 1030, 1030 680, 1720 460" stroke="#ffffff" stroke-width="2.9" stroke-opacity="0.77" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <!-- Top Navigation -->
+      <header class="site-nav" id="siteNav">
+        <nav class="nav-group nav-group--left" aria-label="Primary Navigation">
+          <a href="#stage" class="nav-link" data-nav="home">Home</a>
+          <a href="#best-work" class="nav-link" data-nav="features">Best Work</a>
+          <a href="#best-work" class="nav-link" data-nav="templates">Reels</a>
+          <a href="#contact-subpage" class="nav-link" id="navContactLink" data-nav="contact">Contact Us</a>
+        </nav>
+        <div class="nav-group nav-group--right" aria-label="Social Links">
+          <a href="https://www.instagram.com/?hl=en" target="_blank" rel="noopener noreferrer" class="nav-link" data-nav="instagram">Instagram</a>
+        </div>
+      </header>
+
+      <!-- Center Hero: EDI · pill · TOR -->
+      <section class="hero" id="hero" aria-label="Editor">
+        <span class="word-part">EDI</span>
+
+        <div class="pill" id="pill">
+          <img
+            class="pill-video"
+            id="pillVideo"
+            src="/assets/aistudio/Creative_Workspace_Portfolio_Banner_8fe5e4d1.png"
+            alt="Creative Workspace Portfolio Banner"
+          />
+
+          <!-- Grey overlay for initial hairline -->
+          <div class="pill-hairline" id="pillHairline"></div>
+
+          <!-- Left breeze icon -->
+          <div class="pill-icon pill-icon--left" id="iconLeft" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 9h11.5a2.5 2.5 0 1 0-2.5-2.5" />
+              <path d="M3 13h15.5a2.5 2.5 0 1 1-2.5 2.5" />
+              <path d="M5 17h7.5a2 2 0 1 1-2 2" />
+            </svg>
+          </div>
+
+          <!-- Right speaker icon (toggles sound waves) -->
+          <button
+            type="button"
+            class="pill-icon pill-icon--right"
+            id="speakerBtn"
+            aria-label="Toggle sound waves"
+            aria-pressed="true"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 5L6 9H3v6h3l5 4V5z" />
+              <g class="speaker-waves" id="speakerWaves">
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+              </g>
+            </svg>
+          </button>
+        </div>
+
+        <span class="word-part">TOR</span>
+      </section>
+
+      <!-- Bottom Footer Bar -->
+      <footer class="site-footer" id="siteFooter">
+        <p class="footer-copy">
+          <span class="drop-cap">E</span>Anubhav Sharma professional editor 2 years of experience professional industry level tools.
+        </p>
+        <div class="footer-action-row">
+          <div class="footer-rule" id="footerRule"></div>
+          <button type="button" class="wild-btn" id="replayBtn" aria-haspopup="dialog" aria-controls="contactSubpage">Let's Get Editor</button>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Second Page: Best Work (4 Empty 9:16 Reel Divs) -->
+    <section class="reels-page" id="best-work" aria-label="Best Work">
+      <h2 class="best-work-heading">Best Work</h2>
+
+      <div class="reels-grid">
+        <!-- Put your 9:16 reels inside these 4 empty divs -->
+        <div class="reel-box" id="reel-1">
+          <video
+            id="reelVideo1"
+            src="/assets/aistudio/2_67029e5d.mp4?v=2"
+            poster="/assets/aistudio/2_67029e5d_poster.jpg"
+            autoplay
+            loop
+            muted
+            playsinline
+            webkit-playsinline
+            preload="auto"
+          ></video>
+          <button
+            type="button"
+            class="reel-mute-btn"
+            id="reelMuteBtn1"
+            aria-label="Unmute reel audio"
+            aria-pressed="false"
+          >
+            <!-- Muted icon -->
+            <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+            <!-- Unmuted icon -->
+            <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="reel-box" id="reel-2">
+          <video
+            id="reelVideo2"
+            src="/assets/aistudio/theplatinumgroupnm_pindown.io_1793099790_fa283cd4.mp4"
+            poster="/assets/aistudio/theplatinumgroupnm_poster.jpg"
+            autoplay
+            loop
+            muted
+            playsinline
+            webkit-playsinline
+            preload="auto"
+          ></video>
+          <button
+            type="button"
+            class="reel-mute-btn"
+            id="reelMuteBtn2"
+            aria-label="Unmute reel audio"
+            aria-pressed="false"
+          >
+            <!-- Muted icon -->
+            <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+            <!-- Unmuted icon -->
+            <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="reel-box" id="reel-3">
+          <video
+            id="reelVideo3"
+            src="/assets/aistudio/From_Klickpin.com-_Easy_Pinterest_marketing_ideas_that_make_your_next_project_look_polished_and_expensive_for_ideas_worth_saving_right_now-pin-id-_ed0a0911.mp4"
+            poster="/assets/aistudio/reel3_poster.jpg"
+            autoplay
+            loop
+            muted
+            playsinline
+            webkit-playsinline
+            preload="auto"
+          ></video>
+          <button
+            type="button"
+            class="reel-mute-btn"
+            id="reelMuteBtn3"
+            aria-label="Unmute reel audio"
+            aria-pressed="false"
+          >
+            <!-- Muted icon -->
+            <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+            <!-- Unmuted icon -->
+            <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="reel-box" id="reel-4">
+          <video
+            id="reelVideo4"
+            src="/assets/aistudio/propexofficial_pindown.io_1793098459_f8f74c2b.mp4"
+            poster="/assets/aistudio/reel4_poster.jpg"
+            autoplay
+            loop
+            muted
+            playsinline
+            webkit-playsinline
+            preload="auto"
+          ></video>
+          <button
+            type="button"
+            class="reel-mute-btn"
+            id="reelMuteBtn4"
+            aria-label="Unmute reel audio"
+            aria-pressed="false"
+          >
+            <!-- Muted icon -->
+            <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+            <!-- Unmuted icon -->
+            <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Third Page: Final Website Ending & Contact Card -->
+    <footer class="ending-page" id="ending-page" aria-label="About and Contact Ending">
+      <p class="ending-kicker">Thank You For Visiting · Let's Create Together</p>
+
+      <div class="ending-center">
+        <!-- Circular Frame with User's Photo -->
+        <div class="ending-avatar-ring">
+          <div class="ending-avatar-frame">
+            <img
+              src="/assets/aistudio/WhatsApp_Image_2026-10-27_at_12.18.04_PM_5f7fbb63.jpeg"
+              alt="Anubhav Sharma"
+              class="ending-avatar-img"
+            />
+          </div>
+        </div>
+
+        <h2 class="ending-name">Anubhav Sharma</h2>
+        <p class="ending-role">
+          Professional Video Editor · 2+ Years of Experience Crafting High-Impact Reels &amp; Visual Stories with Industry-Level Tools
+        </p>
+
+        <div class="ending-contact-grid">
+          <div class="ending-contact-item">
+            <span class="ending-contact-label">Name</span>
+            <span>Anubhav Sharma</span>
+          </div>
+
+          <div class="ending-contact-divider" aria-hidden="true"></div>
+
+          <button
+            type="button"
+            class="ending-contact-item"
+            id="endingContactTrigger"
+            style="background: none; border: none; font-family: inherit; cursor: pointer; padding: 0;"
+          >
+            <span class="ending-contact-label">Contact</span>
+            <span> Direct Enquiry / Book a Call</span>
+          </button>
+
+          <div class="ending-contact-divider" aria-hidden="true"></div>
+
+          <a href="mailto:anubhavsharma9188@gmail.com" class="ending-contact-item">
+            <span class="ending-contact-label">Gmail</span>
+            <span>anubhavsharma9188@gmail.com</span>
+          </a>
+        </div>
+
+        <div class="ending-actions">
+          <button type="button" class="ending-cta-btn" id="endingEnquiryBtn">Send an Enquiry</button>
+          <a
+            href="https://www.instagram.com/?hl=en"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="ending-cta-btn ending-cta-btn--ghost"
+          >
+            Instagram
+          </a>
+        </div>
+      </div>
+
+      <div class="ending-bottom-bar">
+        <span>© 2026 Anubhav Sharma — All Rights Reserved.</span>
+        <span>End of Portfolio</span>
+        <a href="#stage" class="ending-top-link" id="backToTopLink">Back to Top ↑</a>
+      </div>
+    </footer>
+
+    <!-- Contact / Client Login Enquiry Subpage -->
+    <aside class="contact-subpage" id="contactSubpage" role="dialog" aria-modal="true" aria-labelledby="contactSubpageTitle">
+      <div class="contact-subpage-card">
+        <div class="contact-subpage-header">
+          <div>
+            <h2 class="contact-subpage-title" id="contactSubpageTitle">Client Portal &amp; Enquiry</h2>
+            <p class="contact-subpage-subtitle">Connect with Anubhav Sharma — share your contact details and the video style you want.</p>
+          </div>
+          <button type="button" class="contact-close-btn" id="closeContactBtn" aria-label="Close contact subpage">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <form
+          class="contact-form"
+          id="contactEnquiryForm"
+          action="https://formsubmit.co/anubhavsharma9188@gmail.com"
+          method="POST"
+        >
+          <input type="hidden" name="_subject" value="New Video Editing Enquiry — EDITOR" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_template" value="table" />
+
+          <div class="contact-form-row">
+            <div class="form-field">
+              <label class="form-label" for="contacterName">Name of Contacter</label>
+              <input
+                type="text"
+                id="contacterName"
+                name="Name of Contacter"
+                class="form-input"
+                placeholder="Your full name"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="contacterPhone">Contact</label>
+              <input
+                type="tel"
+                id="contacterPhone"
+                name="Contact Number"
+                class="form-input"
+                placeholder="+91 / Phone or WhatsApp"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="contacterEmail">Email of Contact</label>
+            <input
+              type="email"
+              id="contacterEmail"
+              name="email"
+              class="form-input"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="videoStyle">Purpose or Video Style You Want</label>
+            <textarea
+              id="videoStyle"
+              name="Purpose or Video Style"
+              class="form-textarea"
+              placeholder="Describe your project purpose, reel format, pacing, color grade, or reference style..."
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="enquiry-submit-btn" id="enquirySubmitBtn">Enquiry</button>
+
+          <div class="enquiry-success" id="enquirySuccessMsg" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </aside>
+
+    <script>
+      (function () {
+        const DURATION = 2100;
+        const params = new URLSearchParams(window.location.search);
+        const isRecMode = params.get('rec') === '1';
+        const prefersReducedMotion =
+          !isRecMode &&
+          window.matchMedia &&
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        const hero = document.getElementById('hero');
+        const pill = document.getElementById('pill');
+        const pillVideo = document.getElementById('pillVideo');
+        const pillHairline = document.getElementById('pillHairline');
+        const bgLayer = document.getElementById('bgLayer');
+        const siteNav = document.getElementById('siteNav');
+        const siteFooter = document.getElementById('siteFooter');
+        const footerRule = document.getElementById('footerRule');
+        const iconLeft = document.getElementById('iconLeft');
+        const speakerBtn = document.getElementById('speakerBtn');
+        const replayBtn = document.getElementById('replayBtn');
+        const contactSubpage = document.getElementById('contactSubpage');
+        const closeContactBtn = document.getElementById('closeContactBtn');
+        const contactEnquiryForm = document.getElementById('contactEnquiryForm');
+        const enquirySubmitBtn = document.getElementById('enquirySubmitBtn');
+        const enquirySuccessMsg = document.getElementById('enquirySuccessMsg');
+
+        let activeAnimations = [];
+        let isReplaying = false;
+
+        function openContactSubpage() {
+          contactSubpage.classList.add('is-open');
+          const firstInput = document.getElementById('contacterName');
+          if (firstInput) {
+            setTimeout(function () {
+              firstInput.focus();
+            }, 120);
+          }
+        }
+
+        function closeContactSubpage() {
+          contactSubpage.classList.remove('is-open');
+        }
+
+        closeContactBtn.addEventListener('click', closeContactSubpage);
+
+        const endingEnquiryBtn = document.getElementById('endingEnquiryBtn');
+        const endingContactTrigger = document.getElementById('endingContactTrigger');
+        const backToTopLink = document.getElementById('backToTopLink');
+
+        if (endingEnquiryBtn) {
+          endingEnquiryBtn.addEventListener('click', openContactSubpage);
+        }
+        if (endingContactTrigger) {
+          endingContactTrigger.addEventListener('click', openContactSubpage);
+        }
+        if (backToTopLink) {
+          backToTopLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            const stageEl = document.getElementById('stage');
+            if (stageEl) {
+              stageEl.scrollIntoView({ behavior: 'smooth' });
+            }
+          });
+        }
+
+        contactSubpage.addEventListener('click', function (e) {
+          if (e.target === contactSubpage) {
+            closeContactSubpage();
+          }
+        });
+
+        window.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && contactSubpage.classList.contains('is-open')) {
+            closeContactSubpage();
+          }
+        });
+
+        contactEnquiryForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const name = document.getElementById('contacterName').value.trim();
+          const contact = document.getElementById('contacterPhone').value.trim();
+          const email = document.getElementById('contacterEmail').value.trim();
+          const style = document.getElementById('videoStyle').value.trim();
+
+          const targetEmail = 'anubhavsharma9188@gmail.com';
+          const mailSubject = encodeURIComponent('New Video Editing Enquiry from ' + name);
+          const mailBody = encodeURIComponent(
+            'Name of Contacter: ' + name + '\n' +
+            'Contact: ' + contact + '\n' +
+            'Email of Contact: ' + email + '\n\n' +
+            'Purpose / Video Style:\n' + style
+          );
+          const mailtoUrl = 'mailto:' + targetEmail + '?subject=' + mailSubject + '&body=' + mailBody;
+
+          enquirySubmitBtn.disabled = true;
+          enquirySubmitBtn.textContent = 'Sending Enquiry...';
+          enquirySuccessMsg.classList.remove('is-visible');
+
+          fetch('https://formsubmit.co/ajax/' + targetEmail, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              _subject: 'New Video Editing Enquiry from ' + name,
+              _replyto: email,
+              'Name of Contacter': name,
+              'Contact': contact,
+              'Email of Contact': email,
+              'Purpose or Video Style': style
+            })
+          })
+            .then(function (res) {
+              return res.json();
+            })
+            .then(function (data) {
+              enquirySubmitBtn.disabled = false;
+              enquirySubmitBtn.textContent = 'Enquiry';
+              if (data && (data.success === 'true' || data.success === true)) {
+                enquirySuccessMsg.textContent =
+                  'Enquiry sent to ' + targetEmail + '! Thank you, ' + name + '.';
+                enquirySuccessMsg.classList.add('is-visible');
+                contactEnquiryForm.reset();
+              } else {
+                window.location.href = mailtoUrl;
+                enquirySuccessMsg.textContent =
+                  'Opening your email client to send your enquiry directly to ' + targetEmail + '.';
+                enquirySuccessMsg.classList.add('is-visible');
+                contactEnquiryForm.reset();
+              }
+            })
+            .catch(function () {
+              enquirySubmitBtn.disabled = false;
+              enquirySubmitBtn.textContent = 'Enquiry';
+              window.location.href = mailtoUrl;
+              enquirySuccessMsg.textContent =
+                'Opening your email client to send your enquiry directly to ' + targetEmail + '.';
+              enquirySuccessMsg.classList.add('is-visible');
+              contactEnquiryForm.reset();
+            });
+        });
+
+        // Hard seamless video loop if video element is used
+        if (pillVideo && typeof pillVideo.play === 'function') {
+          pillVideo.loop = true;
+          pillVideo.muted = true;
+          pillVideo.addEventListener('ended', function () {
+            pillVideo.currentTime = 0;
+            if (!prefersReducedMotion) {
+              pillVideo.play().catch(function () {});
+            }
+          });
+        }
+
+        // Speaker wave toggle (clip remains silent)
+        speakerBtn.addEventListener('click', function () {
+          const muted = speakerBtn.classList.toggle('is-muted');
+          speakerBtn.setAttribute('aria-pressed', String(!muted));
+        });
+
+        // Reels playback & Mute / Unmute toggle buttons (exclusive unmute across reels)
+        const allReelBoxes = document.querySelectorAll('.reel-box');
+        allReelBoxes.forEach(function (box) {
+          const video = box.querySelector('video');
+          const muteBtn = box.querySelector('.reel-mute-btn');
+          if (!video || !muteBtn) return;
+
+          video.muted = true;
+          video.loop = true;
+          video.playsInline = true;
+
+          function ensurePlaying() {
+            if (video.paused) {
+              video.play().catch(function () {});
+            }
+          }
+
+          video.addEventListener('loadeddata', ensurePlaying);
+          video.addEventListener('canplay', ensurePlaying);
+          ensurePlaying();
+
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              function (entries) {
+                entries.forEach(function (entry) {
+                  if (entry.isIntersecting) {
+                    ensurePlaying();
+                  }
+                });
+              },
+              { threshold: 0.15 }
+            );
+            observer.observe(video);
+          }
+
+          muteBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            const willUnmute = video.muted;
+
+            // If unmuting this reel, mute other reels so audio doesn't overlap
+            if (willUnmute) {
+              allReelBoxes.forEach(function (otherBox) {
+                const otherVid = otherBox.querySelector('video');
+                const otherBtn = otherBox.querySelector('.reel-mute-btn');
+                if (otherVid && otherVid !== video) {
+                  otherVid.muted = true;
+                }
+                if (otherBtn && otherBtn !== muteBtn) {
+                  otherBtn.classList.remove('is-unmuted');
+                  otherBtn.setAttribute('aria-pressed', 'false');
+                  otherBtn.setAttribute('aria-label', 'Unmute reel audio');
+                }
+              });
+            }
+
+            video.muted = !willUnmute;
+            muteBtn.classList.toggle('is-unmuted', willUnmute);
+            muteBtn.setAttribute('aria-pressed', String(willUnmute));
+            muteBtn.setAttribute('aria-label', willUnmute ? 'Mute reel audio' : 'Unmute reel audio');
+            ensurePlaying();
+          });
+
+          box.addEventListener('click', function () {
+            ensurePlaying();
+          });
+        });
+
+        // Smooth scroll for anchor navigation links & Contact subpage trigger
+        document.querySelectorAll('.nav-link').forEach(function (link) {
+          link.addEventListener('click', function (e) {
+            const href = link.getAttribute('href');
+            if (href === '#contact-subpage') {
+              e.preventDefault();
+              openContactSubpage();
+              return;
+            }
+            if (href && href.startsWith('#')) {
+              e.preventDefault();
+              const target = document.querySelector(href);
+              if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
+          });
+        });
+
+        // Recording helper: window.__recVideo(t) returns (t mod duration) + 1/120
+        window.__recVideo = function (t) {
+          const dur =
+            pillVideo.duration && isFinite(pillVideo.duration) && pillVideo.duration > 0
+              ? pillVideo.duration
+              : 4.25;
+          const targetTime = ((t % dur) + dur) % dur + 1 / 120;
+          try {
+            pillVideo.currentTime = Math.min(targetTime, dur);
+          } catch (err) {}
+          return targetTime;
+        };
+
+        function isPhoneViewport() {
+          return window.innerWidth <= 720;
+        }
+
+        function getMetrics() {
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+          const phone = isPhoneViewport();
+
+          if (phone) {
+            const fs = Math.min(0.34 * vw, 0.165 * vh);
+            const pillW = vw - 40;
+            const pillH = pillW / 1.85;
+            return { phone: true, fs: fs, pillW: pillW, pillH: pillH };
+          } else {
+            const fs = Math.min(0.196 * vh, 0.114 * vw);
+            return { phone: false, fs: fs, pillW: 3.62 * fs, pillH: 1.81 * fs };
+          }
+        }
+
+        function cancelAllAnimations() {
+          while (activeAnimations.length) {
+            const anim = activeAnimations.pop();
+            try {
+              anim.cancel();
+            } catch (e) {}
+          }
+        }
+
+        function applyFinalStyles() {
+          const m = getMetrics();
+          cancelAllAnimations();
+
+          if (m.phone) {
+            pill.style.width = m.pillW + 'px';
+            pill.style.height = m.pillH + 'px';
+            pill.style.clipPath = 'inset(0% 0%)';
+            hero.style.gap = (0.1 * m.fs) + 'px';
+          } else {
+            pill.style.width = (3.62 * m.fs) + 'px';
+            pill.style.height = (1.81 * m.fs) + 'px';
+            pill.style.clipPath = 'inset(0% 0%)';
+            hero.style.gap = (0.085 * m.fs) + 'px';
+          }
+
+          pillHairline.style.opacity = '0';
+          bgLayer.style.opacity = '1';
+          siteNav.style.transform = 'translateY(0%)';
+          siteFooter.style.transform = 'translateY(0%)';
+          footerRule.style.transform = 'scaleX(1)';
+          iconLeft.style.opacity = '0.85';
+          speakerBtn.style.opacity = '0.85';
+        }
+
+        function createTimelineAnimations() {
+          cancelAllAnimations();
+          const m = getMetrics();
+          const opts = {
+            duration: DURATION,
+            fill: 'both',
+            easing: 'linear'
+          };
+
+          // 1. Pill size & clip-path
+          if (m.phone) {
+            const hFinal = m.pillH;
+            pill.style.width = m.pillW + 'px';
+
+            activeAnimations.push(
+              pill.animate(
+                [
+                  { height: '1.5px', offset: 0 },
+                  { height: '1.5px', offset: 0.14, easing: 'cubic-bezier(.5,0,.3,1)' },
+                  { height: (0.10 * hFinal) + 'px', offset: 0.30, easing: 'cubic-bezier(.45,0,.3,1)' },
+                  { height: (0.55 * hFinal) + 'px', offset: 0.58, easing: 'cubic-bezier(.4,0,.2,1)' },
+                  { height: hFinal + 'px', offset: 1 }
+                ],
+                opts
+              ),
+              pill.animate(
+                [
+                  { clipPath: 'inset(0% 50%)', offset: 0, easing: 'cubic-bezier(.4,0,.2,1)' },
+                  { clipPath: 'inset(0% 0%)', offset: 0.14 },
+                  { clipPath: 'inset(0% 0%)', offset: 1 }
+                ],
+                opts
+              ),
+              hero.animate(
+                [
+                  { gap: (0.03 * m.fs) + 'px', offset: 0 },
+                  { gap: (0.03 * m.fs) + 'px', offset: 0.14, easing: 'cubic-bezier(.45,0,.3,1)' },
+                  { gap: (0.065 * m.fs) + 'px', offset: 0.58, easing: 'cubic-bezier(.4,0,.2,1)' },
+                  { gap: (0.1 * m.fs) + 'px', offset: 1 }
+                ],
+                opts
+              )
+            );
+          } else {
+            const fs = m.fs;
+            pill.style.height = (1.81 * fs) + 'px';
+
+            activeAnimations.push(
+              pill.animate(
+                [
+                  { width: (0.012 * fs) + 'px', offset: 0 },
+                  { width: (0.012 * fs) + 'px', offset: 0.14, easing: 'cubic-bezier(.5,0,.3,1)' },
+                  { width: (0.16 * fs) + 'px', offset: 0.30, easing: 'cubic-bezier(.45,0,.3,1)' },
+                  { width: (1.81 * fs) + 'px', offset: 0.58, easing: 'cubic-bezier(.4,0,.2,1)' },
+                  { width: (3.62 * fs) + 'px', offset: 1 }
+                ],
+                opts
+              ),
+              pill.animate(
+                [
+                  { clipPath: 'inset(50% 0%)', offset: 0, easing: 'cubic-bezier(.4,0,.2,1)' },
+                  { clipPath: 'inset(0% 0%)', offset: 0.14 },
+                  { clipPath: 'inset(0% 0%)', offset: 1 }
+                ],
+                opts
+              ),
+              hero.animate(
+                [
+                  { gap: (0.026 * fs) + 'px', offset: 0 },
+                  { gap: (0.026 * fs) + 'px', offset: 0.14, easing: 'cubic-bezier(.45,0,.3,1)' },
+                  { gap: (0.05 * fs) + 'px', offset: 0.58, easing: 'cubic-bezier(.4,0,.2,1)' },
+                  { gap: (0.085 * fs) + 'px', offset: 1 }
+                ],
+                opts
+              )
+            );
+          }
+
+          // 2. Hairline grey overlay fade out (14% -> 30%)
+          activeAnimations.push(
+            pillHairline.animate(
+              [
+                { opacity: 1, offset: 0 },
+                { opacity: 1, offset: 0.14, easing: 'cubic-bezier(.4,0,.2,1)' },
+                { opacity: 0, offset: 0.30 },
+                { opacity: 0, offset: 1 }
+              ],
+              opts
+            )
+          );
+
+          // 3. Background paper & S-curves fade in (45% -> 78%)
+          activeAnimations.push(
+            bgLayer.animate(
+              [
+                { opacity: 0, offset: 0 },
+                { opacity: 0, offset: 0.45, easing: 'cubic-bezier(.4,0,.2,1)' },
+                { opacity: 1, offset: 0.78 },
+                { opacity: 1, offset: 1 }
+              ],
+              opts
+            )
+          );
+
+          // 4. Nav slides down from -140% (50% -> 86%) with easing (.2,.8,.2,1)
+          activeAnimations.push(
+            siteNav.animate(
+              [
+                { transform: 'translateY(-140%)', offset: 0 },
+                { transform: 'translateY(-140%)', offset: 0.50, easing: 'cubic-bezier(.2,.8,.2,1)' },
+                { transform: 'translateY(0%)', offset: 0.86 },
+                { transform: 'translateY(0%)', offset: 1 }
+              ],
+              opts
+            )
+          );
+
+          // 5. Footer rises from +160% (52% -> 90%)
+          activeAnimations.push(
+            siteFooter.animate(
+              [
+                { transform: 'translateY(160%)', offset: 0 },
+                { transform: 'translateY(160%)', offset: 0.52, easing: 'cubic-bezier(.2,.8,.2,1)' },
+                { transform: 'translateY(0%)', offset: 0.90 },
+                { transform: 'translateY(0%)', offset: 1 }
+              ],
+              opts
+            )
+          );
+
+          // 6. Rule draws from centre (scaleX 0 -> 1) between 40% and 95%
+          activeAnimations.push(
+            footerRule.animate(
+              [
+                { transform: 'scaleX(0)', offset: 0 },
+                { transform: 'scaleX(0)', offset: 0.40, easing: 'cubic-bezier(.4,0,.2,1)' },
+                { transform: 'scaleX(1)', offset: 0.95 },
+                { transform: 'scaleX(1)', offset: 1 }
+              ],
+              opts
+            )
+          );
+
+          // 7. Tiny white line icons fade in after 80% to 85% opacity
+          const iconKeyframes = [
+            { opacity: 0, offset: 0 },
+            { opacity: 0, offset: 0.80, easing: 'cubic-bezier(.4,0,.2,1)' },
+            { opacity: 0.85, offset: 1 }
+          ];
+          activeAnimations.push(
+            iconLeft.animate(iconKeyframes, opts),
+            speakerBtn.animate(iconKeyframes, opts)
+          );
+
+          return activeAnimations;
+        }
+
+        function playRevealForward() {
+          const anims = createTimelineAnimations();
+          anims.forEach(function (a) {
+            a.playbackRate = 1;
+            a.currentTime = 0;
+            a.play();
+          });
+          return anims[0] ? anims[0].finished : Promise.resolve();
+        }
+
+        function playReverseThenForward() {
+          if (prefersReducedMotion || isReplaying) return;
+          isReplaying = true;
+
+          if (activeAnimations.length === 0) {
+            createTimelineAnimations();
+          }
+
+          activeAnimations.forEach(function (a) {
+            a.currentTime = DURATION;
+            a.playbackRate = -1;
+            a.play();
+          });
+
+          const lead = activeAnimations[0];
+          if (!lead) {
+            isReplaying = false;
+            return;
+          }
+
+          lead.finished
+            .then(function () {
+              // Brief hold at collapsed hairline before opening again
+              return new Promise(function (resolve) {
+                setTimeout(resolve, 80);
+              });
+            })
+            .then(function () {
+              activeAnimations.forEach(function (a) {
+                a.currentTime = 0;
+                a.playbackRate = 1;
+                a.play();
+              });
+              return activeAnimations[0] ? activeAnimations[0].finished : Promise.resolve();
+            })
+            .finally(function () {
+              isReplaying = false;
+            });
+        }
+
+        replayBtn.addEventListener('click', function () {
+          openContactSubpage();
+        });
+
+        // Resize: finishes any running animation and resets the pill width
+        window.addEventListener('resize', function () {
+          isReplaying = false;
+          activeAnimations.forEach(function (a) {
+            try {
+              a.finish();
+            } catch (e) {}
+          });
+          applyFinalStyles();
+        });
+
+        // Start once fonts are ready
+        const fontsReady =
+          document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+
+        fontsReady.then(function () {
+          if (prefersReducedMotion) {
+            if (pillVideo && typeof pillVideo.pause === 'function') {
+              pillVideo.pause();
+              pillVideo.removeAttribute('src');
+              pillVideo.load();
+            }
+            applyFinalStyles();
+            return;
+          }
+
+          if (pillVideo && typeof pillVideo.play === 'function') {
+            pillVideo.play().catch(function () {});
+          }
+          playRevealForward();
+
+          // Recording mode (?rec=1): reveal plays at 0 s and reverse collapse starts at 4.9 s
+          if (isRecMode) {
+            setTimeout(function () {
+              if (activeAnimations.length === 0) {
+                createTimelineAnimations();
+              }
+              activeAnimations.forEach(function (a) {
+                a.currentTime = DURATION;
+                a.playbackRate = -1;
+                a.play();
+              });
+            }, 4900);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
